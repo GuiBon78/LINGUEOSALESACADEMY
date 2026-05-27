@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lingueo Académie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D2137;
+  --navy-mid:#152c47;
+  --orange:#C55A11;
+  --cream:#F8F5F0;
+  --cream-dark:#ede9e2;
+  --text:#0D2137;
+  --muted:#6b7a8d;
+  --border:rgba(13,33,55,0.1);
+  --gold:#b8924a;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+nav{background:var(--navy);display:flex;align-items:center;gap:0;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:100}
+.nav-logo{padding:0 24px;display:flex;align-items:center;gap:10px;border-right:1px solid rgba(255,255,255,0.1)}
+.nav-logo-mark{width:32px;height:32px;background:var(--orange);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.nav-logo-mark svg{width:18px;height:18px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-logo-text{font-family:'Playfair Display',serif;font-size:14px;color:white;letter-spacing:.04em}
+.nav-logo-text span{color:var(--gold);font-weight:400}
+.nav-tabs{display:flex;flex:1;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:0 20px;height:52px;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:rgba(255,255,255,0.5);letter-spacing:.06em;text-transform:uppercase;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab-btn:hover{color:rgba(255,255,255,0.8)}
+.tab-btn.active{color:white;border-bottom-color:var(--orange)}
+.tab-btn .tab-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:7px;vertical-align:middle;margin-bottom:1px}
+.view{display:none}
+.view.active{display:block}
+.hero{background:var(--navy);padding:72px 48px 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:400px;height:400px;border-radius:50%;background:rgba(197,90,17,0.06);pointer-events:none}
+.hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:20px}
+.hero-title{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:white;line-height:1.1;margin-bottom:8px}
+.hero-title em{font-style:italic;color:var(--gold)}
+.hero-sub{font-family:'Playfair Display',serif;font-size:22px;color:rgba(255,255,255,0.45);font-weight:400;margin-bottom:32px}
+.hero-body{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.75;max-width:580px;margin-bottom:40px}
+.hero-body strong{color:rgba(255,255,255,0.9);font-weight:500}
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap}
+.hero-stat{border-left:2px solid var(--orange);padding-left:16px}
+.hero-stat-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:white}
+.hero-stat-lbl{font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.content-wrap{padding:48px}
+.section-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.section-intro{font-size:14px;color:var(--muted);margin-bottom:32px;line-height:1.6}
+.convictions{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px}
+.conviction{background:white;border-radius:12px;padding:24px;border:0.5px solid var(--border)}
+.conv-num{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:var(--cream-dark);line-height:1;margin-bottom:12px}
+.conv-title{font-size:14px;font-weight:500;color:var(--navy);margin-bottom:8px}
+.conv-body{font-size:13px;color:var(--muted);line-height:1.6}
+.commun-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:48px}
+.session-card{background:white;border-radius:12px;border:0.5px solid var(--border);overflow:hidden}
+.session-header{padding:20px 24px;display:flex;align-items:flex-start;gap:16px;border-bottom:0.5px solid var(--border)}
+.session-num{width:40px;height:40px;border-radius:8px;background:var(--navy);color:white;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.session-num.current{box-shadow:0 0 0 3px rgba(197,90,17,0.3)}
+.session-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.session-name{font-size:14px;font-weight:500;color:var(--navy)}
+.session-date{font-size:12px;color:var(--muted);margin-top:3px}
+.session-body{padding:20px 24px}
+.session-split{display:flex;gap:12px}
+.split-block{flex:1;background:var(--cream);border-radius:8px;padding:12px}
+.split-lbl{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.split-text{font-size:12px;color:var(--text);line-height:1.55}
+.session-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.tag{font-size:10px;font-weight:500;background:var(--cream-dark);color:var(--muted);border-radius:5px;padding:3px 8px}
+.profils-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.profil-card{background:var(--navy);border-radius:12px;padding:20px;cursor:pointer;transition:all .2s;border:2px solid transparent}
+.profil-card:hover{transform:translateY(-2px);border-color:var(--orange)}
+.profil-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:white;margin-bottom:12px}
+.profil-name{font-size:13px;font-weight:500;color:white;margin-bottom:4px}
+.profil-market{font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:12px}
+.profil-cta{font-size:11px;font-weight:500;color:var(--orange);letter-spacing:.04em}
+.profil-hero{background:var(--navy);padding:40px 48px;display:flex;align-items:center;gap:32px}
+.profil-avatar-lg{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:white;flex-shrink:0}
+.profil-hero-name{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:white}
+.profil-hero-role{font-size:14px;color:rgba(255,255,255,0.5);margin-top:4px}
+.profil-hero-market{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border-radius:6px;padding:5px 12px;font-size:12px;color:rgba(255,255,255,0.7);margin-top:10px}
+.profil-content{padding:40px 48px}
+.profil-grid{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start}
+.rail{display:flex;flex-direction:column;gap:16px}
+.rail-card{background:white;border-radius:12px;border:0.5px solid var(--border);padding:20px}
+.rail-title{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.strength-item{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.strength-bar-wrap{flex:1;height:4px;background:var(--cream-dark);border-radius:2px;overflow:hidden}
+.strength-bar{height:100%;border-radius:2px;background:var(--orange)}
+.strength-label{font-size:12px;color:var(--text);min-width:110px}
+.strength-val{font-size:11px;font-weight:500;color:var(--muted);min-width:28px;text-align:right}
+.focus-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.focus-icon{color:var(--orange);flex-shrink:0;font-weight:500;font-size:14px;margin-top:1px}
+.focus-text{font-size:12px;color:var(--text);line-height:1.5}
+.tool-pill{display:inline-flex;align-items:center;gap:5px;background:var(--cream);border:0.5px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;color:var(--text);margin:3px}
+.parcours{display:flex;flex-direction:column;gap:16px}
+.parcours-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);margin-bottom:20px}
+.parcours-session{background:white;border-radius:12px;border:0.5px solid var(--border);overflow:hidden}
+.ps-header{padding:20px 24px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:background .15s}
+.ps-header:hover{background:rgba(13,33,55,0.02)}
+.ps-badge{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:'Playfair Display',serif;flex-shrink:0;color:white}
+.ps-meta{flex:1}
+.ps-title{font-size:14px;font-weight:500;color:var(--navy)}
+.ps-subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+.ps-status{font-size:11px;font-weight:500;border-radius:20px;padding:3px 10px;flex-shrink:0}
+.status-done{background:#e8f5e9;color:#2e7d32}
+.status-now{background:#fff3e0;color:#e65100}
+.status-next{background:var(--cream-dark);color:var(--muted)}
+.ps-body{border-top:0.5px solid var(--border);padding:24px;display:none}
+.ps-body.open{display:block}
+.ps-two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.ps-block{background:var(--cream);border-radius:8px;padding:14px}
+.ps-block-lbl{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.ps-block-text{font-size:12px;color:var(--text);line-height:1.6}
+.ps-obj{display:flex;gap:8px;margin-bottom:6px;font-size:12px;color:var(--text);line-height:1.5}
+.ps-obj::before{content:'→';color:var(--orange);flex-shrink:0;font-weight:500}
+.jordan-box{background:rgba(197,90,17,0.05);border:0.5px solid rgba(197,90,17,0.2);border-radius:8px;padding:14px;margin-top:12px}
+.jordan-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin-bottom:6px}
+.jordan-prompt{font-size:12px;color:var(--text);font-style:italic;line-height:1.6}
+.c-rony{background:#1a4a6b}
+.c-genia{background:#1d5e3c}
+.c-sarah{background:#7b3a1e}
+.c-julie{background:#3d2a6b}
+.c-daniel{background:#1a4a4a}
+.tab-dot.commun{background:var(--gold)}
+.tab-dot.rony{background:#5ba3d9}
+.tab-dot.genia{background:#4caf80}
+.tab-dot.sarah{background:#e07040}
+.tab-dot.julie{background:#9b7fdb}
+.tab-dot.daniel{background:#4db8b8}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="nav-logo-text">Lingueo <span>Académie</span></div>
+  </div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showView('intro')">Introduction</button>
+    <button class="tab-btn" onclick="showView('commun')"><span class="tab-dot commun"></span>Tronc commun</button>
+    <button class="tab-btn" onclick="showView('rony')"><span class="tab-dot rony"></span>Rony</button>
+    <button class="tab-btn" onclick="showView('genia')"><span class="tab-dot genia"></span>Genia</button>
+    <button class="tab-btn" onclick="showView('sarah')"><span class="tab-dot sarah"></span>Sarah</button>
+    <button class="tab-btn" onclick="showView('julie')"><span class="tab-dot julie"></span>Julie</button>
+    <button class="tab-btn" onclick="showView('daniel')"><span class="tab-dot daniel"></span>Daniel</button>
+  </div>
+</nav>
+
+<div class="view active" id="view-intro">
+  <div class="hero">
+    <div class="hero-eyebrow">Lingueo · Académie Commerciale · 2026</div>
+    <div class="hero-title">Le sales est un<br>métier <em>technique.</em></div>
+    <div class="hero-sub">Traite-le comme tel.</div>
+    <div class="hero-body">Les RH sont les prospects les plus sollicités de France. La concurrence est dure, les techniques évoluent vite, les outils changent.<br><br><strong>Ce programme n'est pas une obligation.</strong> C'est une conviction : un sales technique, curieux et proactif gagne plus, fidélise mieux et tient ses prix. La différence se fait sur la posture, pas sur le catalogue.</div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-val">3</div><div class="hero-stat-lbl">sessions · Juin → Août</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">5</div><div class="hero-stat-lbl">parcours individuels</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">75%</div><div class="hero-stat-lbl">du temps en pratique</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">Sept.</div><div class="hero-stat-lbl">coachs externes</div></div>
+    </div>
+  </div>
+  <div class="content-wrap">
+    <div class="section-title">Trois convictions</div>
+    <div class="section-intro">Ce parcours repose sur un socle philosophique avant d'être une liste de techniques.</div>
+    <div class="convictions">
+      <div class="conviction"><div class="conv-num">01</div><div class="conv-title">Les bases d'abord</div><div class="conv-body">Curiosité, esprit critique, goût de la vente. Sans cette fondation, aucune technique ne tient dans le temps.</div></div>
+      <div class="conviction"><div class="conv-num">02</div><div class="conv-title">La pratique prime</div><div class="conv-body">75% du temps en mise en situation. On n'apprend pas la vente en lisant. Jordan, appels réels, debriefs collectifs.</div></div>
+      <div class="conviction"><div class="conv-num">03</div><div class="conv-title">La trace dans le temps</div><div class="conv-body">Chaque session laisse un livrable écrit. On revient dessus à J+30. La progression se mesure dans les deals.</div></div>
+    </div>
+    <div class="section-title" style="margin-bottom:8px">L'équipe</div>
+    <div class="section-intro">Chaque commercial a un parcours pensé pour son marché, son niveau et ses chantiers prioritaires.</div>
+    <div class="profils-grid">
+      <div class="profil-card" onclick="showView('rony')"><div class="profil-avatar c-rony">RC</div><div class="profil-name">Rony Chabane</div><div class="profil-market">AE PME · Senior</div><div class="profil-cta">Voir le parcours →</div></div>
+      <div class="profil-card" onclick="showView('genia')"><div class="profil-avatar c-genia">GG</div><div class="profil-name">Genia Glushkova</div><div class="profil-market">AE ETI · Confirmée</div><div class="profil-cta">Voir le parcours →</div></div>
+      <div class="profil-card" onclick="showView('sarah')"><div class="profil-avatar c-sarah">SC</div><div class="profil-name">Sarah Cohen</div><div class="profil-market">Certifications · En pivot</div><div class="profil-cta">Voir le parcours →</div></div>
+      <div class="profil-card" onclick="showView('julie')"><div class="profil-avatar c-julie">JV</div><div class="profil-name">Julie Virgolino</div><div class="profil-market">AE PME · Transition B2B</div><div class="profil-cta">Voir le parcours →</div></div>
+      <div class="profil-card" onclick="showView('daniel')"><div class="profil-avatar c-daniel">DB</div><div class="profil-name">Daniel BHUNJUN</div><div class="profil-market">AE PME · Transition B2B</div><div class="profil-cta">Voir le parcours →</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="view" id="view-commun">
+  <div class="hero" style="padding:40px 48px 48px">
+    <div class="hero-eyebrow">Tronc commun · Toute l'équipe</div>
+    <div class="hero-title" style="font-size:36px">3 sessions,<br>1 fil rouge.</div>
+    <div class="hero-body" style="margin-bottom:0">Les thèmes transverses identifiés dans les entretiens annuels. Chaque session s'ouvre sur 30' de théorie, se prolonge par 1h30 de pratique, et laisse une trace dans Slite.</div>
+  </div>
+  <div class="content-wrap">
+    <div class="commun-grid">
+      <div class="session-card">
+        <div class="session-header">
+          <div class="session-num current">1</div>
+          <div><div class="session-label">Juin 2026 · En cours</div><div class="session-name">Salesforce comme cerveau commercial</div><div class="session-date">Un CRM vide, c'est un commercial aveugle</div></div>
+        </div>
+        <div class="session-body">
+          <div class="session-split">
+            <div class="split-block"><div class="split-lbl">Théorie · 30'</div><div class="split-text">Pourquoi le CRM est la mémoire du commercial. Pipeline, activité, notes prospect.</div></div>
+            <div class="split-block"><div class="split-lbl">Pratique · 1h30</div><div class="split-text">Audit live de chaque pipeline. Mise à jour d'un deal réel. Scoring commun. Debriefing Jordan.</div></div>
+          </div>
+          <div class="session-tags"><span class="tag">Salesforce</span><span class="tag">Jordan</span><span class="tag">Scoring deal</span></div>
+        </div>
+      </div>
+      <div class="session-card">
+        <div class="session-header">
+          <div class="session-num">2</div>
+          <div><div class="session-label">Juillet 2026 · À venir</div><div class="session-name">Cycle de vente — de la curiosité au closing</div><div class="session-date">Identifier et travailler son maillon faible</div></div>
+        </div>
+        <div class="session-body">
+          <div class="session-split">
+            <div class="split-block"><div class="split-lbl">Théorie · 30'</div><div class="split-text">Trigger → accroche → découverte → valeur → objections → closing. Adapter à son marché.</div></div>
+            <div class="split-block"><div class="split-lbl">Pratique · 1h30</div><div class="split-text">Mapping du dernier deal perdu. Jeu de rôle ciblé. Jordan comme prospect, notation /10.</div></div>
+          </div>
+          <div class="session-tags"><span class="tag">Jeu de rôle</span><span class="tag">Jordan /10</span><span class="tag">DIA objections</span></div>
+        </div>
+      </div>
+      <div class="session-card">
+        <div class="session-header">
+          <div class="session-num">3</div>
+          <div><div class="session-label">Août 2026 · À venir</div><div class="session-name">Le sales proactif — curiosité, veille et IA</div><div class="session-date">Préparer le terrain pour septembre</div></div>
+        </div>
+        <div class="session-body">
+          <div class="session-split">
+            <div class="split-block"><div class="split-lbl">Théorie · 30'</div><div class="split-text">La curiosité comme avantage compétitif. Veille marché, signaux d'achat, IA offensive.</div></div>
+            <div class="split-block"><div class="split-lbl">Pratique · 1h30</div><div class="split-text">Chacun présente une accroche construite avec Jordan + une source qui a changé sa pratique.</div></div>
+          </div>
+          <div class="session-tags"><span class="tag">Jordan</span><span class="tag">YouTube</span><span class="tag">Bilan individuel</span></div>
+        </div>
+      </div>
+      <div class="session-card" style="background:var(--navy);border-color:rgba(255,255,255,0.1)">
+        <div class="session-header" style="border-bottom-color:rgba(255,255,255,0.08)">
+          <div class="session-num" style="background:var(--gold)">M</div>
+          <div><div class="session-label" style="color:rgba(255,255,255,0.4)">Septembre 2026</div><div class="session-name" style="color:white">Coach externe — Mathieu Redon</div><div class="session-date" style="color:rgba(255,255,255,0.4)">Formation intensive · techniques avancées</div></div>
+        </div>
+        <div class="session-body">
+          <div class="session-split">
+            <div class="split-block" style="background:rgba(255,255,255,0.06)"><div class="split-lbl" style="color:rgba(255,255,255,0.4)">Format</div><div class="split-text" style="color:rgba(255,255,255,0.7)">Intensif. Posture, cycle complet, debriefs individualisés par profil.</div></div>
+            <div class="split-block" style="background:rgba(255,255,255,0.06)"><div class="split-lbl" style="color:rgba(255,255,255,0.4)">Prérequis</div><div class="split-text" style="color:rgba(255,255,255,0.7)">Fiches de progression complétées. Accroches scorées. CRM à jour.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section-title" style="margin-bottom:8px">Outils du programme</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px"><span class="tool-pill">🤖 Jordan — debriefing, simulation, scoring</span><span class="tool-pill">▶ YouTube — veille hebdomadaire</span><span class="tool-pill">📋 Slite — livrables et recyclage J+30</span><span class="tool-pill">☁ Salesforce — CRM et pipeline</span><span class="tool-pill">🎙 Appels enregistrés — jeux de rôle</span></div>
+  </div>
+</div>
+
+
+<div class="view" id="view-rony">
+  <div class="profil-hero"><div class="profil-avatar-lg c-rony">RC</div><div><div class="profil-hero-name">Rony Chabane</div><div class="profil-hero-role">Account Executive · Référence technique de l'équipe</div><div class="profil-hero-market">PME · Demande individuelle · Senior</div></div></div>
+  <div class="profil-content"><div class="profil-grid">
+    <div class="rail">
+      <div class="rail-card"><div class="rail-title">Profil</div>
+        <div class="strength-item"><span class="strength-label">Rigueur commerciale</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:40%;background:#5ba3d9"></div></div><span class="strength-val">2/5</span></div>
+        <div class="strength-item"><span class="strength-label">Ownership</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:60%;background:#5ba3d9"></div></div><span class="strength-val">3/5</span></div>
+        <div class="strength-item"><span class="strength-label">Fiabilité exécution</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:40%;background:#5ba3d9"></div></div><span class="strength-val">2/5</span></div>
+        <div class="strength-item"><span class="strength-label">Salesforce</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:40%;background:#5ba3d9"></div></div><span class="strength-val">2/5</span></div>
+        <div class="strength-item"><span class="strength-label">Engage</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:80%;background:#5ba3d9"></div></div><span class="strength-val">4/5</span></div>
+      </div>
+      <div class="rail-card"><div class="rail-title">Chantiers prioritaires</div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Discipline CRM : renseigner Salesforce quotidiennement — next steps, montants, risques, renouvellements</div></div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Structurer le pipe PME avec des données factuelles, pas du ressenti — préparer les BR avec Salesforce à jour</div></div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Anticiper et documenter les renouvellements : approche préventive compte par compte</div></div>
+      </div>
+    </div>
+    <div class="parcours"><div class="parcours-title">Parcours personnalisé</div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-rony">1</div><div class="ps-meta"><div class="ps-title">Salesforce — aller plus loin que le suivi</div><div class="ps-subtitle">Juin 2026 · Tronc commun + focus senior</div></div><div class="ps-status status-now">En cours</div></div>
+        <div class="ps-body open"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Objectif spécifique</div><div class="ps-block-text">Utiliser Salesforce pour détecter les signaux d'achat et anticiper le recyclage des deals dormants.</div></div><div class="ps-block"><div class="ps-block-lbl">Mise en pratique</div><div class="ps-block-text">Présenter un deal remporté en montrant comment le CRM a structuré la relation. Servir d'exemple.</div></div></div>
+        <div class="ps-obj">Identifier 3 deals dormants depuis +60j et préparer une stratégie de relance</div>
+        <div class="ps-obj">Créer un template de note de suivi partagé avec Julie et Daniel</div>
+        <div class="jordan-box"><div class="jordan-label">Prompt Jordan</div><div class="jordan-prompt">"Analyse cette note de suivi de prospect. Qu'est-ce qui manque pour maximiser les chances à la prochaine relance ?"</div></div></div>
+      </div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-rony">2</div><div class="ps-meta"><div class="ps-title">Cycle de vente — vendre l'impact, pas les bénéfices</div><div class="ps-subtitle">Juillet 2026 · Passer au niveau supérieur</div></div><div class="ps-status status-next">À venir</div></div>
+        <div class="ps-body"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Maillon à travailler</div><div class="ps-block-text">La quantification ROI : "vous récupérez l'équivalent d'un ETP" plutôt que "90% de taux de complétion".</div></div><div class="ps-block"><div class="ps-block-lbl">Rôle en session</div><div class="ps-block-text">Jouer le prospect ETI exigeant pour challenger Genia. Partager 2 techniques de closing.</div></div></div>
+        <div class="ps-obj">Construire 3 arguments ROI chiffrés par persona (RF PME, DRH ETI, cabinet recrutement)</div>
+        <div class="jordan-box"><div class="jordan-label">Prompt Jordan</div><div class="jordan-prompt">"Joue le DRH d'une ETI de 800 personnes. Je dois te convaincre de changer de prestataire formation. Sois exigeant sur le ROI."</div></div></div>
+      </div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-rony">3</div><div class="ps-meta"><div class="ps-title">Proactivité — veille et transmission</div><div class="ps-subtitle">Août 2026 · Bilan et préparation septembre</div></div><div class="ps-status status-next">À venir</div></div>
+        <div class="ps-body"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Objectif</div><div class="ps-block-text">Structurer sa routine de veille et devenir une ressource pour les juniors.</div></div><div class="ps-block"><div class="ps-block-lbl">Livrable</div><div class="ps-block-text">Fiche de progression + 1 accroche par persona scorée Jordan. Partager sa source de veille #1.</div></div></div>
+        <div class="ps-obj">Identifier 2 nouvelles techniques de prospection à tester en septembre</div>
+        <div class="ps-obj">Enregistrer un cold call réussi comme exemple pour l'équipe</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div class="view" id="view-genia">
+  <div class="profil-hero"><div class="profil-avatar-lg c-genia">GG</div><div><div class="profil-hero-name">Genia Glushkova</div><div class="profil-hero-role">Account Executive · Spécialiste ETI</div><div class="profil-hero-market">ETI · Cycle long · Confirmée</div></div></div>
+  <div class="profil-content"><div class="profil-grid">
+    <div class="rail">
+      <div class="rail-card"><div class="rail-title">Profil</div>
+        <div class="strength-item"><span class="strength-label">Rigueur commerciale</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:80%;background:#4caf80"></div></div><span class="strength-val">4/5</span></div>
+        <div class="strength-item"><span class="strength-label">Ownership</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:80%;background:#4caf80"></div></div><span class="strength-val">4/5</span></div>
+        <div class="strength-item"><span class="strength-label">Fiabilité exécution</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:80%;background:#4caf80"></div></div><span class="strength-val">4/5</span></div>
+        <div class="strength-item"><span class="strength-label">Salesforce</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:60%;background:#4caf80"></div></div><span class="strength-val">3/5</span></div>
+        <div class="strength-item"><span class="strength-label">Engage</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:100%;background:#4caf80"></div></div><span class="strength-val">5/5</span></div>
+      </div>
+      <div class="rail-card"><div class="rail-title">Chantiers prioritaires</div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Structurer la stratégie compte ETI : potentiel, risque, next step et renouvellement dans chaque BR</div></div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Anticiper le churn et les renouvellements — approche préventive compte par compte, pas en réactif</div></div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Développer un mindset plus sales : remettre en cause certaines croyances, aller chercher de nouveaux deals ETI &gt; 15K€</div></div>
+      </div>
+    </div>
+    <div class="parcours"><div class="parcours-title">Parcours personnalisé</div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-genia">1</div><div class="ps-meta"><div class="ps-title">Salesforce — cartographier les cycles longs</div><div class="ps-subtitle">Juin 2026 · En cours</div></div><div class="ps-status status-now">En cours</div></div>
+        <div class="ps-body open"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Focus ETI</div><div class="ps-block-text">Structurer le suivi multi-interlocuteurs. Qui décide ? Qui influence ? Qui bloque ?</div></div><div class="ps-block"><div class="ps-block-lbl">Pratique</div><div class="ps-block-text">Mapper un deal ETI en cours. Identifier le prochain jalon précis.</div></div></div>
+        <div class="ps-obj">Créer une cartographie des interlocuteurs pour chaque deal ETI actif</div>
+        <div class="ps-obj">Poser une date de relance sur 100% des deals actifs dans Salesforce</div>
+        <div class="jordan-box"><div class="jordan-label">Prompt Jordan</div><div class="jordan-prompt">"Voici mon deal ETI [décrire]. Je stagne depuis 3 semaines. Propose-moi 3 stratégies de relance selon le profil de mon interlocuteur."</div></div></div>
+      </div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-genia">2</div><div class="ps-meta"><div class="ps-title">Assertivité bienveillante — le grand chantier</div><div class="ps-subtitle">Juillet 2026 · Travail de fond</div></div><div class="ps-status status-next">À venir</div></div>
+        <div class="ps-body"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">La distinction clé</div><div class="ps-block-text">Posture = assertive, déterminée. Comportement = bienveillant, à l'écoute. Les deux coexistent.</div></div><div class="ps-block"><div class="ps-block-lbl">Jeu de rôle</div><div class="ps-block-text">Simuler une demande de remise de 30%. Tenir le prix sans casser la relation.</div></div></div>
+        <div class="ps-obj">Travailler 3 formulations pour tenir le prix sans être agressive</div>
+        <div class="jordan-box"><div class="jordan-label">Prompt Jordan</div><div class="jordan-prompt">"Mon prospect ETI demande 30% de remise. Je ne veux pas céder mais préserver la relation. Donne-moi 3 réponses : douce, ferme, et par la valeur."</div></div></div>
+      </div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-genia">3</div><div class="ps-meta"><div class="ps-title">Proactivité — veille ETI et signaux d'achat</div><div class="ps-subtitle">Août 2026 · Bilan</div></div><div class="ps-status status-next">À venir</div></div>
+        <div class="ps-body"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Objectif</div><div class="ps-block-text">Identifier les signaux d'achat ETI (réorgs, recrutements, nouveaux DRH) pour la prospection.</div></div><div class="ps-block"><div class="ps-block-lbl">Livrable</div><div class="ps-block-text">Fiche de progression + accroche ETI construite avec Jordan, testée en cold call réel.</div></div></div>
+        <div class="ps-obj">Construire une liste de 5 signaux d'achat ETI à surveiller sur LinkedIn</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div class="view" id="view-sarah">
+  <div class="profil-hero"><div class="profil-avatar-lg c-sarah">SC</div><div><div class="profil-hero-name">Sarah Cohen</div><div class="profil-hero-role">Responsable Certifications · Flash Level &amp; Lilate</div><div class="profil-hero-market">Certifications · Partenaires · En pivot total</div></div></div>
+  <div class="profil-content"><div class="profil-grid">
+    <div class="rail">
+      <div class="rail-card"><div class="rail-title">Profil</div>
+        <div class="strength-item"><span class="strength-label">Accroche problème</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:80%;background:#e07040"></div></div><span class="strength-val">8/10</span></div>
+        <div class="strength-item"><span class="strength-label">Utilisation IA</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:88%;background:#e07040"></div></div><span class="strength-val">9/10</span></div>
+        <div class="strength-item"><span class="strength-label">Connais. produit</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:45%;background:#e07040"></div></div><span class="strength-val">4/10</span></div>
+        <div class="strength-item"><span class="strength-label">Nouveaux personas</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:35%;background:#e07040"></div></div><span class="strength-val">3/10</span></div>
+        <div class="strength-item"><span class="strength-label">Pipeline certif.</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:25%;background:#e07040"></div></div><span class="strength-val">2/10</span></div>
+      </div>
+      <div class="rail-card"><div class="rail-title">Chantiers prioritaires</div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Maîtriser Flash Level et Lilate — pitch, tarifs, cas d'usage</div></div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Apprendre les nouveaux personas : cabinets recrutement, OPCO, ATS</div></div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Construire un pipeline certifications de zéro d'ici septembre</div></div>
+      </div>
+    </div>
+    <div class="parcours"><div class="parcours-title">Parcours personnalisé</div>
+      <div style="background:rgba(197,90,17,0.08);border:0.5px solid rgba(197,90,17,0.2);border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;color:var(--navy);line-height:1.6"><strong>Contexte spécial :</strong> Sarah est en pivot total depuis mai 2026. Son parcours est plus intensif sur la maîtrise produit et les nouveaux personas.</div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-sarah">1</div><div class="ps-meta"><div class="ps-title">Salesforce — bâtir un pipeline certifications</div><div class="ps-subtitle">Juin 2026 · En cours · Priorité absolue</div></div><div class="ps-status status-now">En cours</div></div>
+        <div class="ps-body open"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Priorité</div><div class="ps-block-text">Créer les segments certifications dans Salesforce. Cabinets recrutement, OPCO, ATS — 3 listes distinctes.</div></div><div class="ps-block"><div class="ps-block-lbl">Pratique</div><div class="ps-block-text">20 prospects qualifiés par segment. Premiers cold calls cette semaine.</div></div></div>
+        <div class="ps-obj">Constituer une liste de 60 prospects qualifiés (20 × 3 segments) avant fin juin</div>
+        <div class="ps-obj">Faire passer le test Flash Level et le Lilate soi-même avant la session 2</div>
+        <div class="jordan-box"><div class="jordan-label">Prompt Jordan</div><div class="jordan-prompt">"Je vends Flash Level à un cabinet de recrutement. Construis-moi un pitch de 90 secondes axé sur le coût d'un recrutement raté avec un niveau de langue surévalué."</div></div></div>
+      </div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-sarah">2</div><div class="ps-meta"><div class="ps-title">Cycle certifications — nouveaux personas</div><div class="ps-subtitle">Juillet 2026 · Adapter le cycle à un marché inédit</div></div><div class="ps-status status-next">À venir</div></div>
+        <div class="ps-body"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Focus</div><div class="ps-block-text">Le cycle certifications est différent : partenaires qui revendent, logique de volume, intégration ATS.</div></div><div class="ps-block"><div class="ps-block-lbl">Jeu de rôle</div><div class="ps-block-text">Cold call cabinet de recrutement (Guillaume joue le prospect). Puis cold call responsable OPCO.</div></div></div>
+        <div class="ps-obj">Construire 1 pitch par persona (cabinet / OPCO / ATS)</div>
+        <div class="ps-obj">Présenter 3 premiers deals en cours à l'équipe</div>
+        <div class="jordan-box"><div class="jordan-label">Prompt Jordan</div><div class="jordan-prompt">"Joue un directeur de cabinet de recrutement. Je t'appelle pour te présenter Lilate comme test intégrable dans ton ATS. Sois sceptique."</div></div></div>
+      </div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-sarah">3</div><div class="ps-meta"><div class="ps-title">Bilan + plan accélération septembre</div><div class="ps-subtitle">Août 2026 · Plan commercial certifications</div></div><div class="ps-status status-next">À venir</div></div>
+        <div class="ps-body"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Objectif</div><div class="ps-block-text">Pipeline solide avec au moins 3 deals en discussion. Pitch maîtrisé sur les 3 segments.</div></div><div class="ps-block"><div class="ps-block-lbl">Plan sept.</div><div class="ps-block-text">Structurer le plan commercial certifications Q3-Q4 avec Guillaume.</div></div></div>
+        <div class="ps-obj">Pitcher Flash Level et Lilate en 90 secondes chacun devant l'équipe</div>
+        <div class="ps-obj">Présenter le pipeline : 3 deals en discussion, 1 en closing</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div class="view" id="view-julie">
+  <div class="profil-hero"><div class="profil-avatar-lg c-julie">JV</div><div><div class="profil-hero-name">Julie Virgolino</div><div class="profil-hero-role">Account Executive · Transition B2C → B2B</div><div class="profil-hero-market">PME · DI · En transition B2B</div></div></div>
+  <div class="profil-content"><div class="profil-grid">
+    <div class="rail">
+      <div class="rail-card"><div class="rail-title">Profil</div>
+        <div class="strength-item"><span class="strength-label">Rigueur commerciale</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:40%;background:#9b7fdb"></div></div><span class="strength-val">2/5</span></div>
+        <div class="strength-item"><span class="strength-label">Ownership</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:40%;background:#9b7fdb"></div></div><span class="strength-val">2/5</span></div>
+        <div class="strength-item"><span class="strength-label">Fiabilité exécution</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:20%;background:#9b7fdb"></div></div><span class="strength-val">1/5</span></div>
+        <div class="strength-item"><span class="strength-label">Salesforce</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:40%;background:#9b7fdb"></div></div><span class="strength-val">2/5</span></div>
+        <div class="strength-item"><span class="strength-label">Engage</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:60%;background:#9b7fdb"></div></div><span class="strength-val">3/5</span></div>
+      </div>
+      <div class="rail-card"><div class="rail-title">Chantiers prioritaires</div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Fiabilité d'exécution : réduire les écarts sur les processus CRM et commerciaux — zéro étourderies</div></div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Assertivité commerciale : trop de leads perdus par manque d'impact et de persuasion au moment clé</div></div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Structurer le cycle de vente complet, notamment le cold calling et la transition vers le B2B</div></div>
+      </div>
+    </div>
+    <div class="parcours"><div class="parcours-title">Parcours personnalisé</div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-julie">1</div><div class="ps-meta"><div class="ps-title">Salesforce — structurer la double activité</div><div class="ps-subtitle">Juin 2026 · En cours</div></div><div class="ps-status status-now">En cours</div></div>
+        <div class="ps-body open"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Défi spécifique</div><div class="ps-block-text">Gérer B2C et B2B dans le même CRM sans confusion. Segmenter clairement les deux pipelines.</div></div><div class="ps-block"><div class="ps-block-lbl">Pratique</div><div class="ps-block-text">Créer les vues Salesforce B2B séparées. Enrichir avec les RF identifiés via LinkedIn.</div></div></div>
+        <div class="ps-obj">Créer une vue Salesforce dédiée B2B PME avec les bons champs</div>
+        <div class="ps-obj">Identifier le responsable formation de 5 entreprises sans attendre les apprenants</div>
+        <div class="jordan-box"><div class="jordan-label">Prompt Jordan</div><div class="jordan-prompt">"Mon apprenant travaille chez [entreprise]. Comment puis-je retrouver le nom du responsable formation via LinkedIn sans paraître intrusif ?"</div></div></div>
+      </div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-julie">2</div><div class="ps-meta"><div class="ps-title">Accroche B2B — le "petit bonbon"</div><div class="ps-subtitle">Juillet 2026 · Le chantier central</div></div><div class="ps-status status-next">À venir</div></div>
+        <div class="ps-body"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Problème actuel</div><div class="ps-block-text">Accroche trop longue ou trop brutale. Il faut une phrase courte qui pose une problématique et donne envie.</div></div><div class="ps-block"><div class="ps-block-lbl">Jeu de rôle</div><div class="ps-block-text">3 tentatives avec 3 accroches différentes. Le groupe vote. Jordan score chaque accroche.</div></div></div>
+        <div class="ps-obj">Écrire 3 accroches différentes (généraliste / opportunité / sectorielle) avant la session</div>
+        <div class="ps-obj">Tester au moins 1 accroche sur un vrai prospect avant la session</div>
+        <div class="jordan-box"><div class="jordan-label">Prompt Jordan</div><div class="jordan-prompt">"Voici mon accroche cold call PME : [texte]. Note-la sur 10 sur 3 critères : longueur, problématique posée, envie de continuer. Propose une version améliorée."</div></div></div>
+      </div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-julie">3</div><div class="ps-meta"><div class="ps-title">Assertivité — oser poser la question</div><div class="ps-subtitle">Août 2026 · Bilan et consolidation</div></div><div class="ps-status status-next">À venir</div></div>
+        <div class="ps-body"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Objectif</div><div class="ps-block-text">Être à l'aise pour poser la question du closing et gérer le silence qui suit.</div></div><div class="ps-block"><div class="ps-block-lbl">Livrable</div><div class="ps-block-text">Fiche de progression. 1 deal B2B en closing ou gagné à présenter à l'équipe.</div></div></div>
+        <div class="ps-obj">Enregistrer 1 appel de closing et le soumettre à Jordan pour debriefing</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div class="view" id="view-daniel">
+  <div class="profil-hero"><div class="profil-avatar-lg c-daniel">DB</div><div><div class="profil-hero-name">Daniel BHUNJUN</div><div class="profil-hero-role">Account Executive · Transition B2C → B2B</div><div class="profil-hero-market">PME · DI · En transition B2B</div></div></div>
+  <div class="profil-content"><div class="profil-grid">
+    <div class="rail">
+      <div class="rail-card"><div class="rail-title">Profil</div>
+        <div class="strength-item"><span class="strength-label">Rigueur commerciale</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:40%;background:#4db8b8"></div></div><span class="strength-val">2/5</span></div>
+        <div class="strength-item"><span class="strength-label">Ownership</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:60%;background:#4db8b8"></div></div><span class="strength-val">3/5</span></div>
+        <div class="strength-item"><span class="strength-label">Fiabilité exécution</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:60%;background:#4db8b8"></div></div><span class="strength-val">3/5</span></div>
+        <div class="strength-item"><span class="strength-label">Salesforce</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:40%;background:#4db8b8"></div></div><span class="strength-val">2/5</span></div>
+        <div class="strength-item"><span class="strength-label">Engage</span><div class="strength-bar-wrap"><div class="strength-bar" style="width:80%;background:#4db8b8"></div></div><span class="strength-val">4/5</span></div>
+      </div>
+      <div class="rail-card"><div class="rail-title">Chantiers prioritaires</div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Rigueur CRM : s'approprier Salesforce au-delà de la consultation — filtres, next steps, opportunités</div></div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Augmenter le panier moyen : prioriser les opportunités à valeur ajoutée, pas seulement le volume</div></div>
+        <div class="focus-item"><div class="focus-icon">→</div><div class="focus-text">Passer un cap sur la culture vente B2B — posture plus opportuniste, moins conseiller pur</div></div>
+      </div>
+    </div>
+    <div class="parcours"><div class="parcours-title">Parcours personnalisé</div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-daniel">1</div><div class="ps-meta"><div class="ps-title">Salesforce — les bons réflexes dès le début</div><div class="ps-subtitle">Juin 2026 · En cours</div></div><div class="ps-status status-now">En cours</div></div>
+        <div class="ps-body open"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Priorité</div><div class="ps-block-text">Créer dès maintenant les bonnes habitudes CRM. Plus facile de bien faire au début que de corriger.</div></div><div class="ps-block"><div class="ps-block-lbl">Pratique</div><div class="ps-block-text">Ouvrir une fiche pour chaque prospect B2B contacté. Consigner les détails personnels.</div></div></div>
+        <div class="ps-obj">Avoir au moins 5 fiches B2B complètes dans Salesforce avant fin juin</div>
+        <div class="ps-obj">Observer 1 RDV B2B de Rony (en écoute active) et le noter dans Salesforce</div>
+        <div class="jordan-box"><div class="jordan-label">Prompt Jordan</div><div class="jordan-prompt">"Je viens d'avoir un prospect au téléphone. Voici mes notes brutes : [texte]. Aide-moi à structurer ça en une fiche Salesforce avec les bonnes informations."</div></div></div>
+      </div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-daniel">2</div><div class="ps-meta"><div class="ps-title">Proposition de valeur — dépasser la sympathie</div><div class="ps-subtitle">Juillet 2026 · Le défi de fond</div></div><div class="ps-status status-next">À venir</div></div>
+        <div class="ps-body"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Problème identifié</div><div class="ps-block-text">Daniel est apprécié mais la sympathie ne suffit pas à closer. Il faut une proposition qui crée une urgence.</div></div><div class="ps-block"><div class="ps-block-lbl">Jeu de rôle</div><div class="ps-block-text">Cold call + découverte + proposition de valeur sur PME 50 personnes. Genia joue le prospect.</div></div></div>
+        <div class="ps-obj">Faire 10 cold calls B2B avant la session et noter ce qui bloque</div>
+        <div class="jordan-box"><div class="jordan-label">Prompt Jordan</div><div class="jordan-prompt">"Voici mon cold call d'aujourd'hui [retranscription]. Note-le sur 10. Où ai-je été trop sympa au détriment de l'efficacité ? Propose une version plus assertive."</div></div></div>
+      </div>
+      <div class="parcours-session"><div class="ps-header" onclick="toggleSession(this)"><div class="ps-badge c-daniel">3</div><div class="ps-meta"><div class="ps-title">Closing — oser la question finale</div><div class="ps-subtitle">Août 2026 · Bilan des 3 mois</div></div><div class="ps-status status-next">À venir</div></div>
+        <div class="ps-body"><div class="ps-two-col"><div class="ps-block"><div class="ps-block-lbl">Objectif</div><div class="ps-block-text">Poser la question du closing sans douceur excessive. Le silence après "alors on y va ?" n'est pas un échec.</div></div><div class="ps-block"><div class="ps-block-lbl">Livrable</div><div class="ps-block-text">Fiche de progression. 1 deal B2B signé ou en closing avancé à présenter.</div></div></div>
+        <div class="ps-obj">Identifier le moment où j'ai évité le closing dans mes 3 derniers deals</div>
+        <div class="ps-obj">Enregistrer 1 tentative de closing et le soumettre à Jordan</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<script>
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  const tabs={intro:0,commun:1,rony:2,genia:3,sarah:4,julie:5,daniel:6};
+  document.querySelectorAll('.tab-btn')[tabs[id]].classList.add('active');
+}
+function toggleSession(el){
+  el.nextElementSibling.classList.toggle('open');
+}
+</script>
+</body>
+</html>
